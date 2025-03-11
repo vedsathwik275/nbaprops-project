@@ -153,17 +153,75 @@ class BasketballReferenceScaper:
             print(f"Unexpected error: {e}")
             return pd.DataFrame()
     
+    def get_recent_games(self, player_name: str, seasons: Union[List[int], int] = [2025], 
+                         last_n_games: int = 10) -> pd.DataFrame:
+        """
+        Get a player's most recent games without filtering by opponent.
+        Will fetch enough games to return the requested number of games actually played
+        (games with complete statistics).
+        
+        Args:
+            player_name: Full name of the player (e.g., "Trae Young")
+            seasons: List of season years or a single season year
+                    (e.g., [2025, 2024] for both 2024-2025 and 2023-2024 seasons)
+            last_n_games: Number of most recent games with complete stats to return (default: 10)
+            
+        Returns:
+            DataFrame containing the player's recent game data
+        """
+        # Convert single season to list if needed
+        if isinstance(seasons, int):
+            seasons = [seasons]
+        
+        # Get game logs for each season and combine them
+        all_games = []
+        for season in seasons:
+            print(f"Fetching data for {player_name} for {season-1}-{season} season...")
+            game_log = self.get_game_log(player_name, season)
+            
+            if not game_log.empty:
+                all_games.append(game_log)
+        
+        # Combine all season data
+        if all_games:
+            combined_games = pd.concat(all_games, ignore_index=True)
+        else:
+            print(f"No game data found for {player_name} in the specified seasons.")
+            return pd.DataFrame()
+        
+        # Sort by date (newest first)
+        if 'date_game' in combined_games.columns:
+            combined_games = combined_games.sort_values(by='date_game', ascending=False)
+        
+        # Filter for games with complete stats
+        valid_games = combined_games.dropna(subset=['pts', 'ast', 'trb'])
+        
+        # Get the most recent N games with complete stats
+        valid_recent_games = valid_games.head(last_n_games)
+        
+        # If we don't have enough games with valid stats, fetch more
+        if len(valid_recent_games) < last_n_games:
+            print(f"Only found {len(valid_recent_games)} games with complete stats out of requested {last_n_games}.")
+        
+        # Select only the columns we need
+        relevant_columns = ['date_game', 'season', 'opp_id', 'game_location', 'pts', 'ast', 'trb', 'mp', 'reason']
+        columns_to_keep = [col for col in relevant_columns if col in valid_recent_games.columns]
+        
+        return valid_recent_games[columns_to_keep]
+
     def get_games_against_opponent(self, player_name: str, opponent: str, seasons: Union[List[int], int] = [2025, 2024], 
                                  last_n_games: int = 10) -> pd.DataFrame:
         """
         Get a player's games against a specific opponent for one or more seasons.
+        Will fetch enough games to return the requested number of games actually played
+        (games with complete statistics).
         
         Args:
             player_name: Full name of the player (e.g., "Trae Young")
             opponent: Opponent team abbreviation (e.g., "BOS")
             seasons: List of season years or a single season year
                     (e.g., [2025, 2024] for both 2024-2025 and 2023-2024 seasons)
-            last_n_games: Number of most recent games to return (default: 10)
+            last_n_games: Number of most recent games with complete stats to return (default: 10)
             
         Returns:
             DataFrame containing the player's game data against the specified opponent
@@ -196,17 +254,25 @@ class BasketballReferenceScaper:
                 print(f"No games found for {player_name} against {opponent} in the specified seasons.")
                 return pd.DataFrame()
             
-            # Sort by date (newest first) and get the most recent N games
+            # Sort by date (newest first)
             if 'date_game' in opponent_games.columns:
                 opponent_games = opponent_games.sort_values(by='date_game', ascending=False)
             
-            opponent_games = opponent_games.head(last_n_games)
+            # Filter for games with complete stats
+            valid_opponent_games = opponent_games.dropna(subset=['pts', 'ast', 'trb'])
+            
+            # Get the most recent N games with complete stats
+            valid_recent_games = valid_opponent_games.head(last_n_games)
+            
+            # If we don't have enough games with valid stats, print a message
+            if len(valid_recent_games) < last_n_games:
+                print(f"Only found {len(valid_recent_games)} games with complete stats against {opponent} out of requested {last_n_games}.")
             
             # Select only the columns we need
             relevant_columns = ['date_game', 'season', 'opp_id', 'game_location', 'pts', 'ast', 'trb', 'mp', 'reason']
-            columns_to_keep = [col for col in relevant_columns if col in opponent_games.columns]
+            columns_to_keep = [col for col in relevant_columns if col in valid_recent_games.columns]
             
-            return opponent_games[columns_to_keep]
+            return valid_recent_games[columns_to_keep]
         else:
             print("Column 'opp_id' not found in game log data.")
             return pd.DataFrame()
@@ -215,24 +281,21 @@ class BasketballReferenceScaper:
 if __name__ == "__main__":
     scraper = BasketballReferenceScaper()
     
-    # Example: Get Trae Young's last 10 games against the Boston Celtics from current and previous season
+    # Example: Get Trae Young's last 10 games (any opponent)
     player_name = "Trae Young"
-    opponent = "BOS"
     
     try:
-        games = scraper.get_games_against_opponent(player_name, opponent, seasons=[2025, 2024])
-        if not games.empty:
-            print(f"{player_name}'s last {len(games)} games against {opponent}:")
-            print(games[['date_game', 'season', 'pts', 'ast', 'trb']])
+        recent_games = scraper.get_recent_games(player_name, seasons=[2025], last_n_games=10)
+        if not recent_games.empty:
+            print(f"{player_name}'s last {len(recent_games)} games with complete stats:")
+            print(recent_games[['date_game', 'season', 'opp_id', 'pts', 'ast', 'trb']])
             
-            # Show only games with complete stats
-            valid_games = games.dropna(subset=['pts', 'ast', 'trb'])
-            if not valid_games.empty:
-                print(f"\n{player_name}'s last {len(valid_games)} games with complete stats against {opponent}:")
-                print(valid_games[['date_game', 'season', 'pts', 'ast', 'trb']])
-            else:
-                print(f"\nNo games with complete stats found for {player_name} against {opponent}.")
+            # Calculate averages
+            print("\nAverage Statistics:")
+            print(f"Points: {recent_games['pts'].mean():.1f}")
+            print(f"Assists: {recent_games['ast'].mean():.1f}")
+            print(f"Rebounds: {recent_games['trb'].mean():.1f}")
         else:
-            print(f"No games found for {player_name} against {opponent} in the specified seasons.")
+            print(f"No games with complete stats found for {player_name}.")
     except Exception as e:
         print(f"Error: {e}") 

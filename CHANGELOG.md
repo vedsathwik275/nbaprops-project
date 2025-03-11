@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.4.1] - 2023-03-11
+
+### Fixed
+- Modified the scraper to fetch the requested number of games that were actually played
+- Improved filtering to skip games where the player didn't play
+- Removed redundant filtering in the main script
+- Enhanced error messages to be more specific about the number of games found
+
+## [0.4.0] - 2023-03-11
+
+### Added
+- Support for retrieving a player's recent games without opponent filtering
+- Made the opponent parameter optional in the command-line interface
+- Added a new method in the scraper class to get recent games
+
+### Changed
+- Refactored the main script to handle both opponent-specific and general recent game analysis
+- Improved documentation to explain the new functionality
+
 ## [0.3.0] - 2023-03-11
 
 ### Changed

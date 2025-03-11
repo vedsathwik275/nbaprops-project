@@ -9,7 +9,8 @@ The NBA Prop Bet Analyzer helps bettors make informed decisions by analyzing a p
 ## Features
 
 - Retrieve a player's game logs for the current and previous seasons
-- Filter games by specific opponents
+- Analyze recent performance across all games
+- Filter games by specific opponents (optional)
 - Calculate statistical measures (average, median, min, max) for key metrics
 - Compare performance across different seasons
 - Simple command-line interface
@@ -37,13 +38,13 @@ pip install -r requirements.txt
 Run the tool from the command line:
 
 ```bash
-python -m src.main "Player Name" OPPONENT_CODE [--seasons NUM_SEASONS] [--games NUM_GAMES] [--current-only]
+python -m src.main "Player Name" [OPPONENT_CODE] [--seasons NUM_SEASONS] [--games NUM_GAMES] [--current-only]
 ```
 
 ### Arguments:
 
 - `Player Name`: Full name of the NBA player (e.g., "Trae Young")
-- `OPPONENT_CODE`: Three-letter team code (e.g., "BOS" for Boston Celtics)
+- `OPPONENT_CODE`: (Optional) Three-letter team code (e.g., "BOS" for Boston Celtics). If not provided, shows stats for all recent games regardless of opponent.
 
 ### Options:
 
@@ -54,20 +55,23 @@ python -m src.main "Player Name" OPPONENT_CODE [--seasons NUM_SEASONS] [--games 
 ### Examples:
 
 ```bash
-# Get Trae Young's performance against Boston from both current and previous season
+# Get Trae Young's last 10 games against Boston from both current and previous season
 python -m src.main "Trae Young" BOS
 
-# Get only current season performance
-python -m src.main "Trae Young" BOS --current-only
+# Get Trae Young's last 10 games regardless of opponent
+python -m src.main "Trae Young"
 
-# Get data from the last 3 seasons
-python -m src.main "Trae Young" BOS --seasons 3
+# Get only current season performance against Chicago
+python -m src.main "Trae Young" CHI --current-only
 
-# Get up to 5 most recent games from the last 2 seasons
-python -m src.main "Trae Young" BOS --games 5
+# Get data from the last 3 seasons against Detroit
+python -m src.main "Trae Young" DET --seasons 3
+
+# Get a player's 5 most recent games overall
+python -m src.main "Trae Young" --games 5
 ```
 
-This will display Trae Young's performance data against the Boston Celtics for the specified seasons, along with statistical summaries for points, rebounds, and assists.
+This will display the player's performance data for the specified games, along with statistical summaries for points, rebounds, and assists.
 
 ## Team Abbreviations
 
