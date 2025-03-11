@@ -37,7 +37,7 @@ pip install -r requirements.txt
 Run the tool from the command line:
 
 ```bash
-python -m src.main "Player Name" OPPONENT_CODE [--seasons YEAR1 YEAR2...] [--games NUM_GAMES] [--current-only]
+python -m src.main "Player Name" OPPONENT_CODE [--seasons NUM_SEASONS] [--games NUM_GAMES] [--current-only]
 ```
 
 ### Arguments:
@@ -47,9 +47,9 @@ python -m src.main "Player Name" OPPONENT_CODE [--seasons YEAR1 YEAR2...] [--gam
 
 ### Options:
 
-- `--seasons`: NBA season years to analyze (e.g., 2025 2024 for both 2024-2025 and 2023-2024 seasons)
+- `--seasons`: Number of seasons to analyze (e.g., 2 for current and previous season)
 - `--games`: Number of most recent games to analyze (default: 10)
-- `--current-only`: Only analyze current season (2024-2025)
+- `--current-only`: Only analyze current season
 
 ### Examples:
 
@@ -60,7 +60,10 @@ python -m src.main "Trae Young" BOS
 # Get only current season performance
 python -m src.main "Trae Young" BOS --current-only
 
-# Get up to 5 most recent games from both seasons
+# Get data from the last 3 seasons
+python -m src.main "Trae Young" BOS --seasons 3
+
+# Get up to 5 most recent games from the last 2 seasons
 python -m src.main "Trae Young" BOS --games 5
 ```
 

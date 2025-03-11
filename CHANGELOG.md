@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0] - 2023-03-11
+
+### Changed
+- Modified the `--seasons` flag to take the number of seasons to analyze instead of specific year values
+- Added automatic detection of the current NBA season
+- Updated documentation to reflect new command-line options
+
 ## [0.2.0] - 2023-03-11
 
 ### Added
