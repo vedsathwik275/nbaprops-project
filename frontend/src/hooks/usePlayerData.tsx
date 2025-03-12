@@ -44,14 +44,14 @@ export const usePlayerData = () => {
     error,
     refetch
   } = useQuery({
-    queryKey: ['playerAnalysis', selectedPlayer?.name, filters],
+    queryKey: ['playerAnalysis', selectedPlayer?.id, selectedPlayer?.name, filters],
     queryFn: () => {
       if (!selectedPlayer) {
         console.log("queryFn - No player selected");
         throw new Error('No player selected');
       }
-      console.log("queryFn - Fetching data for:", selectedPlayer.name);
-      return getPlayerAnalysis(selectedPlayer.name, filters);
+      console.log("queryFn - Fetching data for:", selectedPlayer.name, "ID:", selectedPlayer.id);
+      return getPlayerAnalysis(selectedPlayer.name, filters, selectedPlayer.id);
     },
     enabled: false, // Disable auto-fetching - only fetch when manually triggered
     meta: {

@@ -75,7 +75,7 @@ const Analyzer = () => {
                   <div className="mt-4 md:mt-0 flex items-center">
                     <div className="text-sm text-white/70 flex items-center">
                       <Target className="h-4 w-4 mr-2 text-teal" />
-                      Prop Lines from Odds API: 
+                      Custom Prop Lines: 
                       <span className="ml-2 px-2 py-1 bg-navy-dark/70 rounded text-white text-xs">
                         PTS {filters.betLines.points}
                       </span>

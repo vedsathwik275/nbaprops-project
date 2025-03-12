@@ -1,6 +1,5 @@
-
-import { useState, useEffect } from 'react';
-import { Target, ChevronDown, RotateCw } from 'lucide-react';
+import { useState } from 'react';
+import { Target, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -21,58 +20,16 @@ const PropBetLinesPlaceholder = ({
   onBetLinesChange,
   playerName
 }: PropBetLinesPlaceholderProps) => {
-  const [loading, setLoading] = useState(false);
-  const [isOddsAvailable, setIsOddsAvailable] = useState(false);
-
-  // Simulate loading odds when player changes
-  useEffect(() => {
-    if (playerName) {
-      setLoading(true);
-      setIsOddsAvailable(false);
-      
-      // Simulate API call delay
-      const timer = setTimeout(() => {
-        setLoading(false);
-        // Random determination if odds are available
-        setIsOddsAvailable(Math.random() > 0.3);
-      }, 1500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [playerName]);
-
-  const fetchOdds = () => {
-    setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setIsOddsAvailable(true);
-      
-      // Mock odds data - in the future, this would come from an actual API
-      const mockOdds = {
-        points: parseFloat((Math.random() * 10 + 20).toFixed(1)),
-        rebounds: parseFloat((Math.random() * 5 + 5).toFixed(1)),
-        assists: parseFloat((Math.random() * 5 + 4).toFixed(1))
-      };
-      
-      onBetLinesChange('points', mockOdds.points);
-      onBetLinesChange('rebounds', mockOdds.rebounds);
-      onBetLinesChange('assists', mockOdds.assists);
-    }, 1500);
-  };
-
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button 
           variant="outline" 
           className="w-full justify-between bg-navy-dark border-white/10 text-white"
-          disabled={loading}
         >
           <div className="flex items-center">
             <Target className="mr-2 h-4 w-4" />
             <span>Prop Bet Lines</span>
-            {loading && <RotateCw className="ml-2 h-3 w-3 animate-spin" />}
           </div>
           <div className="flex items-center text-xs opacity-80 space-x-2">
             <span>PTS: {betLines.points}</span>
@@ -86,24 +43,7 @@ const PropBetLinesPlaceholder = ({
         <div className="space-y-4">
           {playerName && (
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/70">Odds for {playerName}</span>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="bg-navy-dark border-white/10 text-white flex items-center gap-1"
-                onClick={fetchOdds}
-                disabled={loading}
-              >
-                {loading ? 'Loading...' : 'Fetch Odds'}
-                {loading && <RotateCw className="h-3 w-3 animate-spin" />}
-              </Button>
-            </div>
-          )}
-          
-          {isOddsAvailable && (
-            <div className="py-1 px-2 bg-navy-light/30 rounded-md text-xs text-white/70 flex items-center">
-              <Target className="h-3 w-3 mr-2" />
-              Latest odds from Odds API
+              <span className="text-sm text-white/70">Set odds for {playerName}</span>
             </div>
           )}
           
@@ -149,11 +89,9 @@ const PropBetLinesPlaceholder = ({
             />
           </div>
           
-          {!isOddsAvailable && playerName && (
-            <div className="text-xs text-white/70 italic">
-              No odds currently available for this player. Using default values.
-            </div>
-          )}
+          <div className="text-xs text-white/70 italic">
+            Adjust the sliders to set your desired prop bet lines.
+          </div>
         </div>
       </PopoverContent>
     </Popover>

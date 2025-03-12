@@ -11,7 +11,10 @@ app = Flask(__name__)
 # Setup CORS properly
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Hardcoded players for search (temporary solution)
+# Initialize the scraper
+scraper = BasketballReferenceScaper()
+
+# Hardcoded players for search (temporary solution) - keeping as fallback
 PLAYERS = [
     {"id": "jamesle01", "name": "LeBron James", "team": "Los Angeles Lakers", "position": "SF"},
     {"id": "curryst01", "name": "Stephen Curry", "team": "Golden State Warriors", "position": "PG"},
@@ -54,15 +57,27 @@ def convert_minutes(minutes_str):
 
 @app.route('/api/players/search', methods=['GET'])
 def search_players():
-    """Simple search endpoint that uses hardcoded players"""
-    query = request.args.get('q', '').strip().lower()
+    """Search for players using Basketball Reference scraper"""
+    query = request.args.get('q', '').strip()
     
     if not query or len(query) < 2:
         return jsonify([])
     
-    # Filter players
-    results = [p for p in PLAYERS if query in p["name"].lower()]
-    return jsonify(results)
+    try:
+        # Use the scraper to search for players
+        results = scraper.search_players(query)
+        
+        # If no results, fall back to hardcoded players
+        if not results:
+            fallback_results = [p for p in PLAYERS if query.lower() in p["name"].lower()]
+            return jsonify(fallback_results)
+            
+        return jsonify(results)
+    except Exception as e:
+        print(f"Error in player search API: {e}")
+        # Fall back to hardcoded players in case of error
+        fallback_results = [p for p in PLAYERS if query.lower() in p["name"].lower()]
+        return jsonify(fallback_results)
 
 @app.route('/api/test', methods=['GET'])
 def test():
@@ -118,7 +133,14 @@ def analyze_player():
         if not data or 'playerName' not in data:
             return jsonify({"error": "Player name is required"}), 400
         
+        # Extract player name without years in parentheses
         player_name = data.get('playerName')
+        # Remove any text in parentheses, typically years like "(2019-2025)"
+        player_name = re.sub(r'\s*\([^)]*\)', '', player_name).strip()
+        
+        # Check if player ID is provided
+        player_id = data.get('playerId')
+        
         opponent = data.get('opponent', None)
         if opponent == 'ANY':
             opponent = None
@@ -142,13 +164,15 @@ def analyze_player():
                 player_name=player_name,
                 opponent=opponent,
                 seasons=season_years,
-                last_n_games=games_count
+                last_n_games=games_count,
+                player_id=player_id
             )
         else:
             games_df = scraper.get_recent_games(
                 player_name=player_name,
                 seasons=season_years,
-                last_n_games=games_count
+                last_n_games=games_count,
+                player_id=player_id
             )
         
         # Filter by location if specified
@@ -261,6 +285,14 @@ def analyze_player():
                 }
             }
         })
+
+@app.route('/api/player/odds', methods=['POST'])
+def get_player_odds_endpoint():
+    """Get player odds from the Odds API - DEPRECATED, WILL BE REMOVED"""
+    return jsonify({
+        "error": "This endpoint has been deprecated",
+        "message": "Prop bet lines are now set manually by the user"
+    }), 410
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001, host='0.0.0.0') 

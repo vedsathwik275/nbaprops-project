@@ -53,7 +53,8 @@ export const searchPlayers = async (query: string): Promise<PlayerSearchResult[]
  */
 export const getPlayerAnalysis = async (
   playerName: string, 
-  filters: FilterOptions
+  filters: FilterOptions,
+  playerId?: string
 ): Promise<PlayerData> => {
   try {
     const response = await fetch(`${API_BASE_URL}/player/analyze`, {
@@ -63,6 +64,7 @@ export const getPlayerAnalysis = async (
       },
       body: JSON.stringify({
         playerName,
+        playerId,  // Include player ID if available
         opponent: filters.opponent,
         location: filters.location,
         gamesCount: filters.gamesCount,
