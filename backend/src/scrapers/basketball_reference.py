@@ -18,6 +18,40 @@ class BasketballReferenceScaper:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
     
+    def search_players(self, query: str) -> List[Dict[str, str]]:
+        """
+        Search for players by name and return basic player info.
+        
+        Args:
+            query: Player name to search for
+            
+        Returns:
+            List of dictionaries containing player information
+        """
+        # For demonstration, returning a list of hardcoded NBA players
+        # In a real implementation, you would scrape this data from basketball-reference search
+        players = [
+            {"id": "jamesle01", "name": "LeBron James", "team": "Los Angeles Lakers", "position": "SF"},
+            {"id": "curryst01", "name": "Stephen Curry", "team": "Golden State Warriors", "position": "PG"},
+            {"id": "duranke01", "name": "Kevin Durant", "team": "Phoenix Suns", "position": "SF"},
+            {"id": "antetgi01", "name": "Giannis Antetokounmpo", "team": "Milwaukee Bucks", "position": "PF"},
+            {"id": "doncilu01", "name": "Luka Dončić", "team": "Dallas Mavericks", "position": "PG"},
+            {"id": "jokicni01", "name": "Nikola Jokić", "team": "Denver Nuggets", "position": "C"},
+            {"id": "embiijo01", "name": "Joel Embiid", "team": "Philadelphia 76ers", "position": "C"},
+            {"id": "lillada01", "name": "Damian Lillard", "team": "Milwaukee Bucks", "position": "PG"},
+            {"id": "tatumja01", "name": "Jayson Tatum", "team": "Boston Celtics", "position": "SF"},
+            {"id": "moranja01", "name": "Ja Morant", "team": "Memphis Grizzlies", "position": "PG"},
+            {"id": "youngtr01", "name": "Trae Young", "team": "Atlanta Hawks", "position": "PG"},
+            {"id": "edwaran01", "name": "Anthony Edwards", "team": "Minnesota Timberwolves", "position": "SG"},
+            {"id": "foxde01", "name": "De'Aaron Fox", "team": "Sacramento Kings", "position": "PG"},
+            {"id": "georgpa01", "name": "Paul George", "team": "Philadelphia 76ers", "position": "SF"},
+            {"id": "bookede01", "name": "Devin Booker", "team": "Phoenix Suns", "position": "SG"}
+        ]
+        
+        # Filter players based on query (case-insensitive)
+        query = query.lower()
+        return [p for p in players if query in p["name"].lower()]
+    
     def _format_player_url(self, player_name: str, season: int = 2025) -> str:
         """
         Format the URL for a player's game log on basketball-reference.com.

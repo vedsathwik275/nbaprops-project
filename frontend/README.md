@@ -1,4 +1,60 @@
-# Welcome to your Lovable project
+# NBA Props Project - Frontend
+
+This is the frontend application for the NBA Props Project, a tool for analyzing NBA player statistics and prop betting lines.
+
+## Setup and Running
+
+1. Install dependencies:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+The frontend will start at http://localhost:5173.
+
+## Backend Integration
+
+This frontend connects to the backend API which should be running at http://localhost:5000. Make sure the backend is running before using the frontend application.
+
+### Setting up the backend:
+
+1. Navigate to the backend directory
+2. Install the Python dependencies: `pip install -r requirements.txt`
+3. Start the backend server: `python -m src.api`
+
+See the [backend README](../backend/README.md) for more details.
+
+## Features
+
+- Search for NBA players
+- Analyze player performance data
+- Filter by opponent team and location (home/away)
+- View game logs and statistical summaries
+- Compare performance against betting lines
+- Visualize trends with interactive charts
+
+## Technologies Used
+
+- React
+- TypeScript
+- Vite
+- TanStack Query for data fetching
+- shadcn-ui components
+- Tailwind CSS for styling
+- Chart.js for data visualization
+
+## Project Structure
+
+- `src/components/` - UI components
+- `src/hooks/` - Custom React hooks for data fetching and state management
+- `src/pages/` - Page components
+- `src/types/` - TypeScript type definitions
+- `src/utils/` - Utility functions and API service
 
 ## Project info
 

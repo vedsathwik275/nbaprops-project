@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from '@/components/Header';
 import SearchSection from '@/components/SearchSection';
@@ -19,6 +18,13 @@ const Analyzer = () => {
     isAnalyzing,
     analyze,
     filters,
+    setFilters,
+    searchQuery,
+    setSearchQuery,
+    searchResults,
+    isSearching,
+    selectedPlayer,
+    setSelectedPlayer,
   } = usePlayerData();
   
   return (
@@ -29,7 +35,17 @@ const Analyzer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Search Section */}
           <div className="mb-8 animate-fade-in">
-            <SearchSection onSearch={analyze} />
+            <SearchSection 
+              onSearch={analyze}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              searchResults={searchResults}
+              isSearching={isSearching}
+              selectedPlayer={selectedPlayer}
+              setSelectedPlayer={setSelectedPlayer}
+              filters={filters}
+              setFilters={setFilters}
+            />
           </div>
           
           {isAnalyzing ? (
