@@ -1,0 +1,98 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 24% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 258 45% 33%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 32% 17%;
+    --muted-foreground: 214 32% 80%;
+
+    --accent: 175 54% 48%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 272 75% 46%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply font-inter text-foreground bg-navy overflow-x-hidden;
+    background-image: linear-gradient(to bottom, #121826, #1e293b);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-merriweather font-bold;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-black/20 backdrop-blur-lg border border-white/10 shadow-[0_8px_16px_rgba(0,0,0,0.3)];
+  }
+  
+  .card-gradient {
+    @apply bg-gradient-to-br from-navy-light/80 to-navy-dark/80 backdrop-blur-sm;
+  }
+  
+  .input-field {
+    @apply bg-navy-dark/80 border border-white/10 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-purple hover:bg-purple-light text-white font-medium py-2 px-6 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal;
+  }
+
+  .btn-secondary {
+    @apply bg-navy-light hover:bg-navy border border-white/10 text-white font-medium py-2 px-6 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal/50;
+  }
+
+  .shimmer {
+    @apply bg-gradient-to-r from-navy-dark/0 via-navy-light/20 to-navy-dark/0 bg-[length:200%_100%] animate-shimmer;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-teal to-purple-light bg-clip-text text-transparent;
+  }
+}
